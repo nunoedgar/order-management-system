@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/orders")
@@ -27,5 +28,10 @@ public class OrderController {
     @GetMapping
     public ResponseEntity<List<OrderResponseDTO>> getOrders() {
         return ResponseEntity.ok(orderService.getOrders());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderResponseDTO> getOrderById(@PathVariable UUID id) {
+        return ResponseEntity.ok(orderService.getOrderById(id));
     }
 }

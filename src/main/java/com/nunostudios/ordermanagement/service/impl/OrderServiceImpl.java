@@ -6,9 +6,11 @@ import com.nunostudios.ordermanagement.mapper.OrderMapper;
 import com.nunostudios.ordermanagement.model.Order;
 import com.nunostudios.ordermanagement.repository.OrderRepository;
 import com.nunostudios.ordermanagement.service.OrderService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -30,5 +32,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderResponseDTO> getOrders() {
         return orderRepository.findAll().stream().map(orderMapper::toResponseDto).toList();
+    }
+
+    @Override
+    public OrderResponseDTO getOrderById(UUID id) {
+        Order order = orderRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order not found with ID " + id));
+        return orderMapper.toResponseDto(order);
     }
 }
