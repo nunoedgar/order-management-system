@@ -1,5 +1,6 @@
 package com.nunostudios.ordermanagement.model;
 
+import com.nunostudios.ordermanagement.enums.OrderStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -38,10 +39,10 @@ public class Order {
     @Column(name = "PRICE", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
-    @Size(max = 50)
     @NotNull
     @Column(name = "STATUS", nullable = false, length = 50)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
@@ -51,7 +52,7 @@ public class Order {
 
     @PrePersist
     public void onCreate() {
-        status = "CREATED";
+        status = OrderStatus.CREATED;
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
     }
