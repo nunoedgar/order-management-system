@@ -1,16 +1,31 @@
 package com.nunostudios.ordermanagement.controller;
 
+import com.nunostudios.ordermanagement.dto.OrderRequestDTO;
+import com.nunostudios.ordermanagement.dto.OrderResponseDTO;
+import com.nunostudios.ordermanagement.service.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
 
+    private final OrderService orderService;
+
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
+
+    @PostMapping
+    public ResponseEntity<OrderResponseDTO> createOrder(@RequestBody @Valid OrderRequestDTO dto) {
+        return ResponseEntity.ok(orderService.createOrder(dto));
+    }
+
     @GetMapping
-    public ResponseEntity<String> createOrder() {
-        return ResponseEntity.ok("Hello, World!");
+    public ResponseEntity<List<OrderResponseDTO>> getOrders() {
+        return ResponseEntity.ok(orderService.getOrders());
     }
 }
