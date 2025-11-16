@@ -3,6 +3,7 @@ package com.nunostudios.ordermanagement.service.impl;
 import com.nunostudios.ordermanagement.dto.OrderRequestDTO;
 import com.nunostudios.ordermanagement.dto.OrderResponseDTO;
 import com.nunostudios.ordermanagement.enums.OrderStatus;
+import com.nunostudios.ordermanagement.event.OrderEventPublisher;
 import com.nunostudios.ordermanagement.mapper.OrderMapper;
 import com.nunostudios.ordermanagement.model.Order;
 import com.nunostudios.ordermanagement.repository.OrderRepository;
@@ -19,16 +20,20 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
+    private final OrderEventPublisher orderEventPublisher;
 
-    public OrderServiceImpl(OrderRepository orderRepository, OrderMapper orderMapper) {
+    public OrderServiceImpl(OrderRepository orderRepository, OrderMapper orderMapper, OrderEventPublisher orderEventPublisher) {
         this.orderRepository = orderRepository;
         this.orderMapper = orderMapper;
+        this.orderEventPublisher = orderEventPublisher;
     }
 
     @Override
     public OrderResponseDTO createOrder(OrderRequestDTO dto) {
         Order order = orderRepository.save(orderMapper.toEntity(dto));
-        return orderMapper.toResponseDto(order);
+        OrderResponseDTO responseDto = orderMapper.toResponseDto(order);
+        orderEventPublisher.publishOrderStatusUpdated(responseDto);
+        return responseDto;
     }
 
     @Override
@@ -55,9 +60,10 @@ public class OrderServiceImpl implements OrderService {
 
         Order saved = orderRepository.save(order);
 
-        // Observer → notifies via Kafka
-        // kafkaTemplate.send("order-status-updated", saved);
+        OrderResponseDTO responseDto = orderMapper.toResponseDto(saved);
 
-        return orderMapper.toResponseDto(saved);
+        orderEventPublisher.publishOrderStatusUpdated(responseDto);
+
+        return responseDto;
     }
 }
