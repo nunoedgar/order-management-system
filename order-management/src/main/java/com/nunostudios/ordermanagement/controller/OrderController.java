@@ -44,7 +44,7 @@ public class OrderController {
     @Operation(
             summary = "Updates the status of an existing order",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Novo estado do pedido",
+                    description = "Updating order status",
                     required = true,
                     content = @Content(
                             mediaType = "application/json",
