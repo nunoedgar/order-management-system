@@ -1,6 +1,6 @@
 package com.nunostudios.ordermanagement.service.impl;
 
-import com.nunostudios.ordermanagement.dto.OrderReport;
+import com.nunostudios.ordermanagement.model.OrderReport;
 import com.nunostudios.ordermanagement.service.ReportService;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.stereotype.Service;
@@ -15,9 +15,20 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public String createReport(String orderId) {
+    public OrderReport generateReport(String orderId, String customerName, double totalAmount, String status) {
         OrderReport report = reportFactory.getObject();
         report.setOrderId(orderId);
-        return report.generate();
+        report.setCustomerName(customerName);
+        report.setTotalAmount(totalAmount);
+        report.setStatus(status);
+        return report;
     }
+
+    @Override
+    public double calculateTotalWithTax(String orderId, String customerName, double totalAmount, String status, double taxRate) {
+        OrderReport report = generateReport(orderId, customerName, totalAmount, status);
+        return report.calculateTotalWithTax(taxRate);
+    }
+
+
 }
