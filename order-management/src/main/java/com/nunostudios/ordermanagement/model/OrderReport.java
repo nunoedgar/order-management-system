@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Component
@@ -16,7 +18,7 @@ public class OrderReport {
     private final LocalDateTime createdAt;
     private String orderId;
     private String customerName;
-    private double totalAmount;
+    private BigDecimal totalAmount;
     private String status;
 
     public OrderReport() {
@@ -31,7 +33,7 @@ public class OrderReport {
         );
     }
 
-    public double calculateTotalWithTax(double taxRate) {
-        return totalAmount + (totalAmount * taxRate);
+    public BigDecimal calculateTotalWithTax(BigDecimal taxRate) {
+        return totalAmount.add(totalAmount.multiply(taxRate));
     }
 }
