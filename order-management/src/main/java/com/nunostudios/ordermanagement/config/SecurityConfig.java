@@ -18,6 +18,10 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        // Actuator endpoints
+                        .requestMatchers("/actuator/health", "/actuator/info").permitAll()
+                        .requestMatchers("/actuator/**").hasRole("ADMIN")
+                        //API endpoints
                         .requestMatchers(HttpMethod.GET, "/orders/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/orders/**").hasRole("USER")
                         .requestMatchers(HttpMethod.PATCH, "/orders/**").hasRole("ADMIN")
@@ -31,11 +35,11 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService() {
         return new InMemoryUserDetailsManager(
                 User.withUsername("nuno")
-                        .password("{noop}password123")
+                        .password("{noop}foobar")
                         .roles("USER")
                         .build(),
                 User.withUsername("admin")
-                        .password("{noop}admin123")
+                        .password("{noop}foobar")
                         .roles("ADMIN")
                         .build()
         );
