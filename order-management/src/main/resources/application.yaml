@@ -31,3 +31,6 @@ management:
 
 springdoc:
   show-actuator: true
+  swagger-ui:
+    oauth2RedirectUrl: http://localhost:8080/swagger-ui/oauth2-redirect.html
+    use-basic-authentication-with-access-code-grant: true
